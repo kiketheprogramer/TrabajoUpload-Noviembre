@@ -1,0 +1,108 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-size: cover;
+  height: 100vh;
+  text-align: center;
+  align-content: center;
+  background-color: #ccc;
+}
+
+.header {
+  width: 100%;
+  padding: 20px 0;
+  background-color: black;
+  color: white;
+}
+
+.title {
+  font-size: 24px;
+  margin-right: 20px;
+}
+
+.button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.form-button {
+  background-color: #008CBA;
+}
+
+#form-container {
+  display: none;
+}
+
+form {
+  font-family: Arial, sans-serif;
+  background-color: black;
+  color: white;
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+form label,
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+form input[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+}
+
+form input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+
+.nombre {
+  font-weight: bold;
+}
+
+.imagen {
+  max-width: 200px;
+  max-height: 200px;
+}
+
+.personaje-container {
+  border: 2px solid;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+.personaje-container h3 {
+  margin-top: 10px;
+}
+
+.personajes-grid {
+  flex-wrap: wrap;
+  justify-content: space-around; /* Distribuir los elementos horizontalmente */
+}
+
+.personaje {
+  flex: 0 0 calc(33.33% - 20px); /* Para mostrar tres personajes por fila con margen */
+  margin: 10px;
+  border: 2px solid transparent; /* Borde inicial transparente */
+  border-radius: 5px;
+  padding: 10px;
+  box-sizing: border-box; /* Incluir el borde y el padding en el ancho del elemento */
+}

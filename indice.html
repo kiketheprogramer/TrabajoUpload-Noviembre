@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LakeView Investigation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+    <body id="mainBody">
+    <div class="header">
+        <div class="title">LakeView Investigation</div><br>
+        <button id="changeViewButton" class="button" style="border-radius: 50px;">Cambiar vista</button>
+    </div>
+    <img id="backgroundImage" src="https://img.freepik.com/fotos-premium/vista-lago-puesta-sol-al-fondo_931553-105047.jpg" alt="" style="width: 1200px; height: 800px;">
+
+    <button id="changeFormButton" class="button" style="border-radius: 50px; display: none;">Ver Formulario</button>
+
+    <form id="form-container">
+       
+     
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" required>
+          <br>
+          <br>
+   
+          <label for="tipo">Tipo</label>
+          <select id="tipo" name="tipo" required>
+              <option value="cargado">Cargado</option>
+              <option value="vivo">Vivo</option>
+          </select>
+          <br>
+          <br>
+   
+          <label for="vive">Donde vive</label>
+          <input type="text" id="vive" name="vive" required>
+          <br>
+       
+          <label for="desde">Desde cuando fue descargado:</label>
+          <input type="date" id="desde" name="desde">
+          <br>
+          <br>
+   
+          <label for="culpabilidad">Posible culpabilidad</label>
+          <select id="culpabilidad" name="culpabilidad" required>
+              <option value="posible cooperador">Posible cooperador</option>
+              <option value="cooperador">Cooperador</option>
+              <option value="delincuente">Delincuente</option>
+          </select>
+          <br>
+          <br>
+   
+          <label for="imagen">URL de la imagen del sujeto:</label>
+          <input type="url" id="imagen" name="imagen">
+          <br>
+          <br>
+   
+          <label for="comentarios">Comentarios</label>
+          <textarea id="comentarios" name="comentarios"></textarea>
+          <br>
+          <br>
+   
+    
+          <input type="submit" value="Agregar" id="argegarEditar">
+        
+ </form>
+ <div id="personajesContainer" class="personajes-grid" style="display: none;"></div>
+    <script>
+
+     //#region Controlador de Pantallas 
+
+     let mainBody = document.getElementById('mainBody');
+        let backgroundImage = document.getElementById('backgroundImage');
+        let changeViewButton = document.getElementById('changeViewButton');
+        let formContainer = document.getElementById('form-container');
+        let changeFormButton = document.getElementById('changeFormButton');
+        let PersonajesContainer = document.getElementById('personajesContainer');
+
+        changeViewButton.addEventListener('click', () => {
+          if (changeViewButton.innerText === 'Cambiar vista') {
+          changeViewButton.innerText = 'Volver a la vista';
+          backgroundImage.style.display = 'none';
+          formContainer.style.display = 'none';
+          changeFormButton.style.display = 'block';
+          PersonajesContainer.style.display = 'flex';
+        } else {
+         changeViewButton.innerText = 'Cambiar vista';
+          backgroundImage.style.display = 'block';
+          changeFormButton.style.display = 'none';
+          formContainer.style.display = 'none';
+          PersonajesContainer.style.display = 'none';
+          changeFormButton.innerText = 'Ver Formulario';
+       
+      }})
+
+      changeFormButton.addEventListener('click', () => {
+          if (changeFormButton.innerText === 'Ver Formulario') {
+         changeFormButton.innerText = 'Ver Personajes';
+         formContainer.style.display = 'block';
+         PersonajesContainer.style.display = 'none';
+        } else {
+         changeFormButton.innerText = 'Ver Formulario';
+         formContainer.style.display = 'none';
+         PersonajesContainer.style.display = 'flex';
+      }
+
+      
+
+      });
+    //#endregion
+  
+        document.addEventListener("DOMContentLoaded", function() {
+       
+        showPersonajes(); // Llamar a la función showPersonajes() después de obtener los personajes
+    });
+
+
+
+       let personajes = [
+     {
+                nombre: "David Choak",
+                tipo: "vivo",
+                vive: "Lugar desconocido",
+                desde: "2023-01-01",
+                culpabilidad: "cooperador",
+                imagen: "https://static.tvmaze.com/uploads/images/medium_portrait/255/637514.jpg",
+                comentarios: "Cooperó con la segunda empresa privada más grande del mundo. Es más que una coincidencia que David y su hermano sean parodias de los multimillonarios de la industria petrolera de la vida real, David y Charles Koch"
+            }
+     ]; 
+
+
+      //#region funciones
+     function agregarPersonaje(event) {
+            event.preventDefault();
+
+            // Obtener los valores del formulario
+            let nombre = document.getElementById('nombre').value;
+            let tipo = document.getElementById('tipo').value;
+            let vive = document.getElementById('vive').value;
+            let desde = document.getElementById('desde').value;
+            let culpabilidad = document.getElementById('culpabilidad').value;
+            let imagen = document.getElementById('imagen').value;
+            let comentarios = document.getElementById('comentarios').value;
+
+            //#region Validaciones
+            if (nombre === '') {
+              alert('Por favor, ingresa un nombre.');
+              return; 
+               }
+
+           if (/\d/.test(nombre)) {
+              alert('El nombre no puede contener números.');
+              return; 
+         }
+
+          if (personajes.some(personaje => personaje.nombre === nombre)) {
+               alert('El nombre ingresado ya existe. Por favor, elige otro nombre.');
+              return; 
+          }
+
+
+           if (vive === '') {
+              alert('Por favor, ingresa el lugar donde vive.');
+             return; 
+          }
+         //#endregion 
+
+
+            // Crear un nuevo objeto de tipo personaje
+            let persona = new personaje(nombre, tipo, vive, desde, culpabilidad, imagen, comentarios);
+
+            // Agregar el nuevo objeto al array personajes
+            personajes.push(persona);
+            guardarPersonajesEnLocalStorage();
+
+            // Llamar a la función showPersonajes() para actualizar la tabla
+            showPersonajes();
+
+            formContainer.style.display = 'none';
+              PersonajesContainer.style.display = 'flex';
+
+    // Cambiar el texto del botón
+             changeFormButton.innerText = 'Ver Formulario';
+            
+        }
+
+    function personaje(nombre, tipo, vive, desde, culpabilidad, imagen, comentarios) {
+            this.nombre = nombre;
+            this.tipo = tipo;
+            this.vive = vive;
+            this.desde = desde;
+            this.culpabilidad = culpabilidad;
+            this.imagen = imagen;
+            this.comentarios = comentarios;
+        }
+
+
+    function showPersonajes() {
+    let personajesContainer = document.getElementById("personajesContainer");
+    personajesContainer.innerHTML = "";
+
+    personajes.forEach(function (personaje, index) {
+        let divPersonaje = document.createElement("div");
+        divPersonaje.classList.add("personaje");
+
+        const imagenPersonaje = document.createElement("img");
+        imagenPersonaje.src = personaje.imagen;
+        imagenPersonaje.alt = personaje.nombre;
+        imagenPersonaje.style.width = '100px';
+        imagenPersonaje.style.height = '100px';
+        imagenPersonaje.addEventListener("error", () => imagenPersonaje.src="imgtroll.jpg");
+
+        const nombrePersonaje = document.createElement("h3");
+        nombrePersonaje.textContent = `${personaje.nombre}`;
+
+        const descPersonaje = document.createElement("p");
+        descPersonaje.textContent = `${personaje.comentarios}`;
+
+        divPersonaje.appendChild(imagenPersonaje);
+        divPersonaje.appendChild(nombrePersonaje);
+        divPersonaje.appendChild(descPersonaje);
+
+        switch (personaje.culpabilidad) {
+            case 'posible cooperador':
+                divPersonaje.style.borderColor = 'green';
+                nombrePersonaje.style.color = 'green';
+                break;
+            case 'cooperador':
+                divPersonaje.style.borderColor = 'orange';
+                nombrePersonaje.style.color = 'orange';
+                break;
+            case 'delincuente':
+                divPersonaje.style.borderColor = 'red';
+                nombrePersonaje.style.color = 'red';
+                break;
+            default:
+                divPersonaje.style.borderColor = 'black';
+                nombrePersonaje.style.color = 'black';
+                break;
+        }
+
+        divPersonaje.addEventListener('click', function () {
+            mostrarDatosPersonaje(index); // Aquí pasamos el índice del personaje
+        });
+
+        personajesContainer.appendChild(divPersonaje);
+    });
+}
+
+    function mostrarDatosPersonaje(index) {
+    let selectedPersonaje = personajes[index];
+
+    document.getElementById('nombre').value = selectedPersonaje.nombre;
+    document.getElementById('tipo').value = selectedPersonaje.tipo;
+    document.getElementById('vive').value = selectedPersonaje.vive;
+    document.getElementById('desde').value = selectedPersonaje.desde;
+    document.getElementById('culpabilidad').value = selectedPersonaje.culpabilidad;
+    document.getElementById('imagen').value = selectedPersonaje.imagen;
+    document.getElementById('comentarios').value = selectedPersonaje.comentarios;
+
+    let agregarEditarButton = document.getElementById('argegarEditar');
+    agregarEditarButton.value = 'Editar';
+
+    agregarEditarButton.removeEventListener('click', agregarPersonaje);
+
+    agregarEditarButton.addEventListener('click', function(event) {
+
+        event.preventDefault();
+    
+        let nombre = document.getElementById('nombre').value;
+        let tipo = document.getElementById('tipo').value;
+        let vive = document.getElementById('vive').value;
+        let desde = document.getElementById('desde').value;
+        let culpabilidad = document.getElementById('culpabilidad').value;
+        let imagen = document.getElementById('imagen').value;
+        let comentarios = document.getElementById('comentarios').value;
+
+        
+        personajes[index].nombre = nombre;
+        personajes[index].tipo = tipo;
+        personajes[index].vive = vive;
+        personajes[index].desde = desde;
+        personajes[index].culpabilidad = culpabilidad;
+        personajes[index].imagen = imagen;
+        personajes[index].comentarios = comentarios;
+
+        
+        showPersonajes();
+        agregarEditarButton.value = 'Agregar';
+
+        limpiarFormulario();
+        
+        agregarEditarButton.removeEventListener('click', null);
+        agregarEditarButton.addEventListener('click', agregarPersonaje);
+    });
+
+
+    showPersonajes();
+    formContainer.style.display = 'none';
+    PersonajesContainer.style.display = 'flex';
+
+    // Cambiar el texto del botón dependiendo de si se está mostrando el formulario o la lista de personajes
+    if (formContainer.style.display === 'block') {
+        changeFormButton.innerText = 'Ver Personajes';
+    } else {
+        changeFormButton.innerText = 'Ver Formulario';
+    }
+    changeFormButton.innerText = 'Ver Personajes';
+    formContainer.style.display = 'block';
+    PersonajesContainer.style.display = 'none';
+}
+
+    function limpiarFormulario() {
+            document.getElementById('nombre').value = ''; // Limpia el campo de nombre
+            document.getElementById('tipo').value = 'cargado'; // Establece el valor predeterminado para el campo de tipo
+            document.getElementById('vive').value = ''; // Limpia el campo de donde vive
+            document.getElementById('desde').value = ''; // Limpia el campo de desde cuándo fue descargado
+            document.getElementById('culpabilidad').value = 'posible cooperador'; // Establece el valor predeterminado para el campo de culpabilidad
+            document.getElementById('imagen').value = ''; // Limpia el campo de la URL de la imagen
+            document.getElementById('comentarios').value = ''; // Limpia el campo de comentarios
+        }
+
+    function guardarPersonajesEnLocalStorage() {
+
+        localStorage.setItem('personajes', JSON.stringify(personajes));
+    }
+
+    function isValidImageURL(url) {
+    // Expresión regular para verificar el formato de la URL de la imagen
+    const pattern = /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i;
+    return pattern.test(url);
+    }      
+            //#endregion
+
+       document.getElementById('argegarEditar').addEventListener('click', agregarPersonaje);
+
+       document.getElementById('changeFormButton').addEventListener('click', function() {
+            limpiarFormulario(); // Llama a la función limpiarFormulario al hacer clic en "Ver Formulario"
+        });
+
+        document.getElementById('tipo').addEventListener('change', function() {
+           let desde = document.getElementById('desde');
+             if (this.value === 'vivo') {
+             desde.disabled = true;
+             } else {
+             desde.disabled = false;
+           }
+        });
+
+        guardarPersonajesEnLocalStorage();
+
+        function obtenerPersonajesDeLocalStorage() {
+    let savedPersonajes = localStorage.getItem('personajes');
+    if (savedPersonajes) {
+        personajes = JSON.parse(savedPersonajes);
+    }
+}
+
+obtenerPersonajesDeLocalStorage();
+
+document.addEventListener("DOMContentLoaded", function() {
+    showPersonajes();
+});
+
+
+
+  </script>
+</body>
+</html>
